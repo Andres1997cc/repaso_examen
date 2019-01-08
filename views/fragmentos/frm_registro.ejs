@@ -1,0 +1,65 @@
+<script src="/assets/js/validator.js"></script>
+<script>    
+
+    $().ready(function () {
+        
+        // validate signup form on keyup and submit
+        $("#formulario").validate({
+            rules: {
+                cedula: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    number: true
+                },
+                nombre: {
+                    required: true,
+                    minlength: 3
+                },
+                apellido: {
+                    required: true,
+                    minlength: 3
+                }
+            },
+            messages: {
+                cedula: {
+                    required: "Ingrese la cedula",
+                    minlength: "Usted puede agregar minimo 10 caracteres",
+                    maxlength: "Usted puede agregar maximo 10 caracteres",
+                    number: "Solo numeros"
+                }
+            }
+        });
+
+    });
+</script>
+<header class="major">
+    <h2><%= title %></h2>    
+</header>
+<section id="content">
+    <% if (locals.flash) { %>
+        <div class="alert alert-danger">
+            <%- locals.flash %>
+        </div>
+        <% } %>    
+    <form method="post" action="/facturas/registro/personas/save" id="formulario">
+        <div class="row gtr-uniform gtr-50">
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="cedula"  placeholder="Cedula" />
+            </div>
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="apellidos"  placeholder="Apellidos" />
+            </div>
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="nombres" placeholder="Nombres" />
+            </div>
+
+            <div class="col-12">
+                <ul class="actions">
+                    <li><input type="submit" value="GUARDAR" class="btn btn-success" /></li>
+                    <li><a href="/facturas" class="btn btn-danger">CANCELAR</a></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</section>

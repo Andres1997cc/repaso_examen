@@ -1,0 +1,16 @@
+{
+    "development":{
+        "username": "root",
+        "password": "darksissy",
+        "database": "vinosdb",
+        "host": "localhost",
+        "dialect": "mysql"
+    },
+    "staging":{
+        "username": "root",
+        "password": "",
+        "database": "vinosdb",
+        "host": "localhost",
+        "dialect": "mysql"
+    }
+}

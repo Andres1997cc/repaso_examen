@@ -1,0 +1,158 @@
+<script src="/assets/js/validator.js"></script>
+<script>
+
+    $().ready(function () {
+
+        // validate signup form on keyup and submit
+        $("#formulario").validate({
+            rules: {
+                clientes: {
+                    required: true
+                },
+                fecha: {
+                    required: true,
+                    date: true
+                },
+                nro: {
+                    required: true,
+                    minlength: 3
+                },
+                subtotal: {
+                    required: true,
+                    number: true
+                },
+                iva: {
+                    required: true,
+                    number: true
+                },
+                total: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                clientes: {
+                    required: "Ingrese la cedula"
+                }
+            }
+        });
+
+        function calcularIva() {
+            var subtotal = $("#subtotal").val();
+            var iva = subtotal * 1 * 0.12;
+            $("#iva").val(iva);
+        }
+
+        function calcularTotal() {
+            calcularIva();
+            var subtotal = $("#subtotal").val();
+            var iva = $("#iva").val();
+            var desc = $("#descuento").val();
+            var descuento = ((subtotal * 1) + (iva * 1)) * (desc / 100);
+            var total = ((subtotal * 1) + (iva * 1) - (descuento));
+            $("#total").val(total);
+        }
+
+        $("#subtotal").keyup(function () {
+            calcularTotal();
+        });
+
+        $("#descuento").change(function () {
+            calcularTotal();
+        });
+
+    });
+</script>
+<header class="major">
+    <h2><%= title %></h2>    
+</header>
+<section id="content">
+    <% if (locals.flash) { %>
+        <div class="alert alert-danger">
+            <%- locals.flash %>
+        </div>
+        <% } %>  
+    <form method="post" action="/facturas/registro/facturas/save" id="formulario">
+        <div class="row gtr-uniform gtr-50">
+            <input type="hidden" value="0" id="external" name="external"/>    
+            <div class="col-12">
+                <select name="clientes" id="clientes">
+                    <% lista.forEach(function(persona, i) { %>
+                    <option value="<%= persona.id %>"><%= persona.nombres %> <%= persona.apellidos %></option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div class="col-6 col-12-xsmall">
+                <input type="date" name="fecha" id="fecha" placeholder="Fecha" style="color: red"/>
+            </div>
+
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="nro" id="nro" placeholder="Nro Factura" />
+            </div>
+
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="subtotal" id="subtotal" placeholder="Subtotal" />
+            </div>
+
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="iva" id="iva"  placeholder="Iva" readonly/>
+            </div>
+
+            <div class="col-12">
+                <select name="descuento" id="descuento">
+                    <option value="0">0</option>
+                    <option value="5">5%</option>
+                    <option value="10">10%</option>
+                </select>
+            </div>
+
+            <div class="col-6 col-12-xsmall">
+                <input type="text" name="total" id="total"  placeholder="Total" readonly/>
+            </div>
+
+            <div class="col-12">
+                <ul class="actions">
+                    <li><input type="submit" value="GUARDAR" class="primary" /></li>
+                    <li><a href="/facturas" class="btn btn-danger">CANCELAR</a></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nro</th><th>Cliente</th><th>Nro Factura</th><th>Total</th><th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% listaF.forEach(function(factura, i) { %>
+                
+                <tr>
+                    <td><%= (i+1) %></td>
+                    <td>
+                        <%= factura[i].datosPersona %>
+                    </td>
+                    <td><%= factura[i].nro_factura %></td>
+                    <td><%= factura[i].total %></td>
+                    <td><a href="#" id="<%= i %>">Modificar</a></td>
+            <script>
+                $("#<%= i %>").click(function () {
+                    $("#external").val("<%= factura[i].external_id %>");
+                    $("#clientes").val("<%= factura[i].persona %>");
+                    $("#nro").val("<%= factura[i].nro_factura %>");
+                    $("#fecha").val("<%= factura[i].fecha %>");
+                    $("#subtotal").val("<%= factura[i].subtotal %>");
+                    $("#descuento").val("<%= factura[i].descuento %>");
+                    $("#total").val("<%= factura[i].total %>");
+                    $("#iva").val("<%= factura[i].iva %>");
+                });
+            </script>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
